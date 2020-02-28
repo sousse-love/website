@@ -24,6 +24,8 @@ steps:
 
 
 - script: |
+   pwd
+   ls
    hugo --log -v
   displayName: 'Generate Blog'
 
