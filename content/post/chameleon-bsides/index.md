@@ -3,6 +3,11 @@ title: chameleon solution BsidesSF 2020
 date: 2020-02-08
 math: false
 diagram: true
+authors:
+  - aziz
+tags:
+  - rev
+  - bsidessf20
 image:
   placement: 3
 ---
