@@ -44,6 +44,6 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: Publish website
   inputs:
-    PathtoPublish: '$ (Build.ArtifactStagingDirectory)'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: Drop
     publishLocation: 'Container'
