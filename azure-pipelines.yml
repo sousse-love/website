@@ -37,7 +37,7 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Blog'
   inputs:
-    SourceFolder: './website/public'
+    SourceFolder: './public'
     Contents: "**"
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
