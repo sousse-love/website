@@ -27,7 +27,7 @@ social:
   link: 'https://www.facebook.com/knani.aalaeddine.52'  # For a direct email link, use "mailto:test@example.org".
 - icon: instagram
   icon_pack: fab
-  link: https://twitter.com/moonflock
+  link: https://www.instagram.com/knaniaalaeddine/
 
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
