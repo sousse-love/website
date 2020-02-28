@@ -10,6 +10,13 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      git submodule update --init --recursive
+  displayName: Git submodule update
+
 - task: CmdLine@2
   inputs:
     script: |
@@ -24,8 +31,6 @@ steps:
 
 
 - script: |
-   pwd
-   ls
    hugo --log -v
   displayName: 'Generate Blog'
 
