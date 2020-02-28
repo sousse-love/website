@@ -14,9 +14,30 @@ steps:
   inputs:
     script: |
       wget https://github.com/gohugoio/hugo/releases/download/v0.65.3/hugo_extended_0.65.3_Linux-64bit.deb
+  displayName: Download hugo
 
 - task: CmdLine@2
   inputs:
     script: |
       sudo dpkg -i hugo_extended_0.65.3_Linux-64bit.deb
+  displayName: Install hugo
 
+
+- script: |
+   cd $ (blog.path)
+   hugo --log -v
+  displayName: 'Generate Blog'
+
+- task: CopyFiles@2
+  displayName: 'Copy Blog'
+  inputs:
+    SourceFolder: './website/public'
+    Contents: "**"
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish website
+  inputs:
+    PathtoPublish: '$ (Build.ArtifactStagingDirectory)'
+    ArtifactName: Drop
+    publishLocation: 'Container'
