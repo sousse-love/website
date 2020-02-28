@@ -24,7 +24,6 @@ steps:
 
 
 - script: |
-   cd ./website/
    hugo --log -v
   displayName: 'Generate Blog'
 
