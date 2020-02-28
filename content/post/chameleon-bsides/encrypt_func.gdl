@@ -1,0 +1,167 @@
+graph: {
+title: "Graph of encrypt"
+manhattan_edges: yes
+layoutalgorithm: mindepth
+finetuning: no
+layout_downfactor: 100
+layout_upfactor: 0
+layout_nearfactor: 0
+xlspace: 12
+yspace: 30
+// IDA palette
+colorentry 32: 0 0 0
+colorentry 33: 170 170 170
+colorentry 34: 255 197 243
+colorentry 35: 130 96 126
+colorentry 36: 102 102 102
+colorentry 37: 255 255 255
+colorentry 38: 235 235 185
+colorentry 39: 235 235 185
+colorentry 40: 255 236 187
+colorentry 41: 192 192 192
+colorentry 42: 105 210 0
+colorentry 43: 0 255 0
+colorentry 44: 210 80 50
+colorentry 45: 255 70 70
+colorentry 46: 255 170 127
+colorentry 47: 124 124 97
+colorentry 48: 210 80 50
+colorentry 49: 128 128 0
+colorentry 50: 255 52 55
+colorentry 51: 192 192 192
+colorentry 52: 89 89 89
+colorentry 53: 255 197 243
+colorentry 54: 255 170 255
+colorentry 55: 255 210 0
+colorentry 56: 0 255 255
+colorentry 57: 255 128 0
+colorentry 58: 255 210 0
+colorentry 59: 157 214 0
+colorentry 60: 223 7 126
+colorentry 61: 105 210 0
+colorentry 62: 121 243 0
+colorentry 63: 210 80 50
+colorentry 64: 171 171 171
+colorentry 65: 115 173 173
+colorentry 66: 255 90 253
+colorentry 67: 255 255 127
+colorentry 68: 170 255 0
+colorentry 69: 255 210 0
+colorentry 70: 255 170 255
+colorentry 71: 255 255 0
+colorentry 72: 0 0 0
+colorentry 73: 45 45 45
+colorentry 74: 225 173 50
+colorentry 75: 0 255 255
+colorentry 76: 102 102 102
+colorentry 77: 170 0 0
+colorentry 78: 124 124 97
+colorentry 79: 157 157 0
+colorentry 80: 255 85 255
+colorentry 81: 0 0 0
+colorentry 82: 255 170 0
+colorentry 83: 0 0 0
+node: { title: "0" label: "69encrypt31:
+sub     esp, 2Ch
+mov     eax, ___security_cookie
+xor     eax, esp
+mov     [esp+2Ch+var_4], eax
+mov     eax, [esp+2Ch+input]; filename
+lea     ecx, [esp+2Ch+pdwDataLen]
+push    esi
+push    ecx; lpNumberOfBytesRead
+call    read_file
+mov     edx, [esp+34h+pdwDataLen]
+add     edx, 10h
+push    edx; NewSize
+push    eax; Memory
+call    ds:realloc
+add     esp, 0Ch
+push    0F0000000h; dwFlags
+push    1; dwProvType
+push    offset szProvider; \"Microsoft Enhanced Cryptographic Provid\"...
+mov     esi, eax
+push    0; szContainer
+lea     eax, [esp+40h+phProv]
+push    eax; phProv
+call    ds:CryptAcquireContextA
+test    eax, eax
+jnz     short loc_E5202D" vertical_order: 0 }
+node: { title: "1" label: "push    offset aEncryptionFail; \"Encryption failed\\n\"
+call    ds:__iob_func
+add     eax, 40h
+push    eax; File
+call    ds:fprintf
+add     esp, 8
+push    1; Code
+call    ds:exit" vertical_order: 5 }
+node: { title: "2" label: "push    edi
+lea     edi, [esp+34h+var_C]
+call    mersenne_twister
+mov     edx, dword ptr [esp+34h+var_C]
+xor     ecx, ecx
+mov     word ptr [esp+34h+pbData+2], cx
+lea     ecx, [esp+34h+phKey]
+push    ecx; phKey
+push    1; dwFlags
+mov     eax, 8
+push    0; hPubKey
+mov     [esp+40h+pbData], al
+mov     dword ptr [esp+40h+pbData+8], eax
+mov     eax, dword ptr [esp+40h+var_C+4]
+mov     dword ptr [esp+40h+pbData+0Ch], edx
+push    14h; dwDataLen
+lea     edx, [esp+44h+pbData]
+mov     dword ptr [esp+44h+pbData+10h], eax
+mov     eax, [esp+44h+phProv]
+push    edx; pbData
+push    eax; hProv
+mov     [esp+4Ch+pbData+1], 2
+mov     dword ptr [esp+4Ch+pbData+4], 6601h
+call    ds:CryptImportKey
+pop     edi
+test    eax, eax
+jz      short loc_E5200D" }
+node: { title: "3" label: "mov     ecx, [esp+30h+pdwDataLen]
+mov     eax, [esp+30h+phKey]
+add     ecx, 8
+push    ecx; dwBufLen
+lea     edx, [esp+34h+pdwDataLen]
+push    edx; pdwDataLen
+push    esi; pbData
+push    0; dwFlags
+push    1; Final
+push    0; hHash
+push    eax; hKey
+call    ds:CryptEncrypt
+test    eax, eax
+jz      loc_E5200D" }
+node: { title: "4" label: "lea     ecx, [esp+30h+var_C]
+push    ecx; key
+call    sub_E51AA0
+mov     edx, [esp+34h+pdwDataLen]
+push    edx
+push    esi
+mov     eax, ebx
+call    sub_E51F50
+push    esi; Memory
+call    ds:free
+mov     ecx, [esp+40h+var_4]
+add     esp, 10h
+pop     esi
+xor     ecx, esp
+call    @__security_check_cookie@4; __security_check_cookie(x)
+add     esp, 2Ch
+retn" vertical_order: 5 }
+// node 0
+edge: { sourcename: "0" targetname: "1" label: "false" color: red }
+edge: { sourcename: "0" targetname: "2" label: "true" color: darkgreen }
+// node 1
+// node 2
+edge: { sourcename: "2" targetname: "1" label: "true" color: darkgreen }
+edge: { sourcename: "2" targetname: "3" label: "false" color: red }
+// node 3
+edge: { sourcename: "3" targetname: "1" label: "true" color: darkgreen }
+edge: { sourcename: "3" targetname: "4" label: "false" color: red }
+// node 4
+}

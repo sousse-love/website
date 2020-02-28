@@ -1,0 +1,98 @@
+graph: {
+title: "Graph of mersenne_twister"
+manhattan_edges: yes
+layoutalgorithm: mindepth
+finetuning: no
+layout_downfactor: 100
+layout_upfactor: 0
+layout_nearfactor: 0
+xlspace: 12
+yspace: 30
+// IDA palette
+colorentry 32: 0 0 0
+colorentry 33: 170 170 170
+colorentry 34: 255 197 243
+colorentry 35: 130 96 126
+colorentry 36: 102 102 102
+colorentry 37: 255 255 255
+colorentry 38: 235 235 185
+colorentry 39: 235 235 185
+colorentry 40: 255 236 187
+colorentry 41: 192 192 192
+colorentry 42: 105 210 0
+colorentry 43: 0 255 0
+colorentry 44: 210 80 50
+colorentry 45: 255 70 70
+colorentry 46: 255 170 127
+colorentry 47: 124 124 97
+colorentry 48: 210 80 50
+colorentry 49: 128 128 0
+colorentry 50: 255 52 55
+colorentry 51: 192 192 192
+colorentry 52: 89 89 89
+colorentry 53: 255 197 243
+colorentry 54: 255 170 255
+colorentry 55: 255 210 0
+colorentry 56: 0 255 255
+colorentry 57: 255 128 0
+colorentry 58: 255 210 0
+colorentry 59: 157 214 0
+colorentry 60: 223 7 126
+colorentry 61: 105 210 0
+colorentry 62: 121 243 0
+colorentry 63: 210 80 50
+colorentry 64: 171 171 171
+colorentry 65: 115 173 173
+colorentry 66: 255 90 253
+colorentry 67: 255 255 127
+colorentry 68: 170 255 0
+colorentry 69: 255 210 0
+colorentry 70: 255 170 255
+colorentry 71: 255 255 0
+colorentry 72: 0 0 0
+colorentry 73: 45 45 45
+colorentry 74: 225 173 50
+colorentry 75: 0 255 255
+colorentry 76: 102 102 102
+colorentry 77: 170 0 0
+colorentry 78: 124 124 97
+colorentry 79: 157 157 0
+colorentry 80: 255 85 255
+colorentry 81: 0 0 0
+colorentry 82: 255 170 0
+colorentry 83: 0 0 0
+node: { title: "0" label: "69mersenne_twister31:
+push    0; Time
+call    ds:_time64
+add     esp, 4
+xor     ecx, ecx
+lea     ecx, [ecx+0]" vertical_order: 0 }
+node: { title: "1" label: "imul    eax, 1C8EF2Fh
+dec     eax
+mov     mt[ecx*4], eax
+inc     ecx
+cmp     ecx, 15Fh
+jl      short loc_E51A20" }
+node: { title: "2" label: "push    esi
+mov     dword_E54018, ecx
+xor     esi, esi" }
+node: { title: "3" label: "call    getrandom
+xor     al, 55h
+mov     [esi+edi], al
+inc     esi
+cmp     esi, 8
+jb      short loc_E51A40" }
+node: { title: "4" label: "pop     esi
+retn" vertical_order: 5 }
+// node 0
+edge: { sourcename: "0" targetname: "1" }
+// node 1
+edge: { sourcename: "1" targetname: "2" label: "false" color: red }
+edge: { sourcename: "1" targetname: "1" label: "true" color: darkgreen }
+// node 2
+edge: { sourcename: "2" targetname: "3" }
+// node 3
+edge: { sourcename: "3" targetname: "4" label: "false" color: red }
+edge: { sourcename: "3" targetname: "3" label: "true" color: darkgreen }
+// node 4
+}
