@@ -38,7 +38,7 @@ Example: chameleon.exe --encrypt plaintext.txt ciphertext.txt
 Example: chameleon.exe --decrypt --id=abcd1234 ciphertext.txt plaintext.txt
 ```
 
-I know where to look and I didn't focus on the decryption stuff to be honest.
+I knew where to look and I didn't focus on the decryption stuff to be honest.
 
 ### Reversing the binary
 
@@ -46,7 +46,7 @@ After identifying the encrypt function and changing some function names here is 
 
 ![qsf](encrypt_func.png)
 
-And here is what hexrays decompiler gives us after changing some types and variable names:
+And here is what the hexrays decompiler gives us after changing some types and variable names:
 
 ```c
 void __usercall encrypt(const CHAR *output@<ebx>, const CHAR *input)
@@ -106,9 +106,9 @@ BYTE DesKeyBlob[] = {
     };
 ```
 
-We can see that our example also uses DES using CBC mode of operation, we also see that DES is passed as the last 8 bytes (with byte of parity) of the array.
+We can see that our example also uses DES using CBC mode of operation, we also see that the DES key is passed as the last 8 bytes (with byte of parity) of the array.
 
-Ok so the bread and butter of this problem is knowing how mersenne twister works.
+Ok so the bread and butter of this problem is knowing how the mersenne twister works.
 
 #### Reversing mersenne_twister
 
@@ -231,11 +231,11 @@ int getrandom()
 }
 ```
 
-Looks like a normal getrandom function from mt19937 but the is, this is not because the length of the array is 351, this is called mt11213.
+Looks like a normal getrandom function from mt19937 but the thing is, it is not. Because the length of the array is 351, this is called mt11213.
 
 #### Putting it all together
 
-After looking on the internet for some constants I found this [page](http://www.ai.mit.edu/courses/6.836-s03/handouts/sierra/random.c), maybe we can work that.
+After looking on the internet for some constants I found this [page](http://www.ai.mit.edu/courses/6.836-s03/handouts/sierra/random.c), maybe we can work with that.
 
 The only difference with the program was the factor, also I had to change from long to int because this was written for a 32 bit machine (I spent two hours debugging this lol).
 
