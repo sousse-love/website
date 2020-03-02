@@ -43,3 +43,4 @@ user_groups:
 -
 ---
 
+16 yo, I mostly do web exploitation stuff but also interested in low-level and pwnable. Apart from security, I like programming and computer related stuff.
