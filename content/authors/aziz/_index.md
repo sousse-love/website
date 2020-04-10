@@ -29,7 +29,7 @@ social:
   link: https://github.com/mohamed-aziz
 - icon: internet-explorer
   icon_pack: fab
-  link: https://aziz.tn/
+  link: https://www.aziz.tn/
 
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
