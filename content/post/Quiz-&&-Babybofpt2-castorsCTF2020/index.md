@@ -1,7 +1,7 @@
 ---
 title: Quiz-&&-Babybofpt2-castorsCTF2020
-date: 2020-06-01T17:54:37+01:00
-lastmod: 2020-06-01T17:54:37+01:00
+date: 2020-06-01
+lastmod: 2020-06-01
 math: false
 diagram: true
 authors:
