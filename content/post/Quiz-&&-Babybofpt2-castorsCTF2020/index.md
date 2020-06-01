@@ -1,3 +1,20 @@
+---
+title: SignStealingSoftware-P2 UMDCTF2020
+date: 2020-06-01T17:54:37+01:00
+lastmod: 2020-06-01T17:54:37+01:00
+math: false
+diagram: true
+authors:
+  - t0m7r00z
+tags:
+  - web
+  - pwn
+  - binary exploitation
+  - castorsCTF2020
+image:
+  placement: 3
+---
+
 # Introduction
 
 Hey everyone, I participated with my team from Sousse, with love in the castorsCTF2020, we got 3rd place out of 500+ teams. This will be a detailed writeup about a web task and a pwn task. So i hope you like it :heart:.
@@ -12,37 +29,37 @@ Hey everyone, I participated with my team from Sousse, with love in the castorsC
 
 ## Description
 
-![Description](C:\Users\ADMIN\Desktop\WRITEUPs\Description.png)
+![](Description.png)
 
 ## Overview
 
 Accessing the website we get a little welcome message
 
-![welcomemessage](C:\Users\ADMIN\Desktop\WRITEUPs\welcomemessage.png)
+![](welcomemessage.png)
 
 the source didn't got any useful information so I clicked on the Math hyperlink and that provides to us some math problems followed by their indexes and two inputs at the bottom from which we can input the index of the problem and the solution to it.
 
-![mathshit](C:\Users\ADMIN\Desktop\WRITEUPs\mathshit.png)
+![](mathshit.png)
 
 Again nothing useful in the source, so trying to solve one of these questions will return back a message that our answer is correct otherwise it will return back a message that our answer is wrong.
 
-![correct](C:\Users\ADMIN\Desktop\WRITEUPs\correct.png)
+![](correct.png)
 
-![incorrect](C:\Users\ADMIN\Desktop\WRITEUPs\incorrect.png)
+![](incorrect.png)
 
 So the first step as usual is to try to break this app and make return an error message so we can get more info about the environment we are in. And to do that I tried to enter some characters instead of numbers.
 
-![trywithchars](C:\Users\ADMIN\Desktop\WRITEUPs\trywithchars.png)
+![](trywithchars.png)
 
 And unfortunately this broke it because it will try to convert a non digit character to an integer which will basically generate a runtime error.
 
-![convai](C:\Users\ADMIN\Desktop\WRITEUPs\convai.PNG)
+![](convai.PNG)
 
 Of course we cannot exploit the `strconv.Atoi` function. Trying the same thing with the second input (the answer input) didn't reveal any errors. You may think that it was evaluating the second input but hey there is no eval/exec method in go and I don't think that the author created or included a package to do that. So nothing helpful here. Thinking a little bit, I decided to bruteforce the filenames maybe that reveals some helpful info and maybe more endpoints to target. For this job, I used to famous project gobuster with a wordlist of some common filenames.
 
 
 
-![gobuster](C:\Users\ADMIN\Desktop\WRITEUPs\gobuster.png)
+![](gobuster.png)
 
 Good we got a folder called backup. Accessing it leaks the source code of the `main.go` file. Taking a look at it.
 
@@ -111,17 +128,17 @@ func check(w http.ResponseWriter, form url.Values) {
 
 	data, _ := csv.NewReader(answers).ReadAll()
 
-	index, err := strconv.Atoi(form["index"][0])
+	index, err := strconv.Atoi(form[])
 	handleError(w, err)
-	value := form["var"][0]
+	value := form[]
 
-	f_answers := make(map[int]string)
+	f_answers := make(map[]string)
 
 	for i, v := range data {
-		f_answers[i+1] = v[0]
+		f_answers[]
 	}
 
-	if f_answers[index] == value {
+	if f_answers[] == value {
 		last := struct {
 			Header string
 			SorC   string
@@ -191,7 +208,7 @@ func game(w http.ResponseWriter) {
 	}, 0)
 	for i, v := range data {
 		questions.Index = i + 1
-		questions.Question = v[0]
+		questions.Question = v[]
 		ques = append(ques, questions)
 	}
 
@@ -208,7 +225,7 @@ var file string = "/" + ps.ByName("directory") + "/" + ps.ByName("theme") + "/" 
 
 then it will try to open the file based on our input. For example accessing http://web1.cybercastors.com:14436/test/anything/t0m/7r00z will try to open the file located at `/anything/t0m/7r00z` which is of course not found and the function will return `no such file or directory`.
 
-![nosuchfileordir](C:\Users\ADMIN\Desktop\WRITEUPs\nosuchfileordir.PNG)
+![](nosuchfileordir.PNG)
 
 Okay so we have a local file inclusion here. Being completely blind about where the application is located at and what files are on the system I first included `/proc/self/cmdline` to get a basic idea of the command being run. That's what I got.
 
@@ -229,26 +246,26 @@ Contents: HOSTNAME=a67d58c9b465HOME=/rootPATH=/go/bin:/usr/local/go/bin:/usr/loc
 and the important thing here is the PWD environment variable which is basically the current working directory. In this case it's `/quiz`. We also see that the home directory is `/root`. Knowing that I tried to include some files that I might have the flag. And in order to access files from the same directory I used netcat to pass the `.` (which means current directory), because all of the three names where required if you don't pass any of them you will get a `404 not found status code back` and because if you pass that with the browser or with the curl command they will remove it and that's the same case with the `..`, Knowing that I constructed the HTTP request with just two headers (because no need to include more headers here) which are the `Host`and the `Connection` header. The `Host` is used to indicate the host that we are trying to make the connection to, the `Connection` is used to indicate whether the connection should stay or should close after the transaction completes, so if we say `Connection: close` means that the connection will close after the transaction and `Connection: keep-alive` means that the connection will stay open after the transaction. Okay so let's start start by constructing the request.
 
 ```
-![etc_passwd](C:\Users\ADMIN\Desktop\WRITEUPs\etc_passwd.png)GET /test/quiz/./flag.txt HTTP/1.1
+![](etc_passwd.png)GET /test/quiz/./flag.txt HTTP/1.1
 Host: web1.cybercastors.com:14436
 Connection: close
 ```
 
 Going to the terminal and typing: `nc web1.cybercastors.com 14436`, then pasting the request there and hitting enter two times (so break line two times because that's how HTTP requests work) will pass the request to the server and it will show it's content back. But trying with `/quiz/./flag.txt, /quiz/problems/flag.txt, /root/./flag.txt` fails, all of them failed.
 
-![failLFI](C:\Users\ADMIN\Desktop\WRITEUPs\failLFI.png)
+![](failLFI.png)
 
 Remember that the leak is just the last of the file, so leaking the /etc/passwd wouldn't really give useful info about what users might have accounts on the system, and also the last line of the /etc/passwd is just that:
 
-![etc_passwd](C:\Users\ADMIN\Desktop\WRITEUPs\etc_passwd.png)
+![](etc_passwd.png)
 
 And here where the description is being a key to solve the challenge. Let's read it again.
 
-![readagain](C:\Users\ADMIN\Desktop\WRITEUPs\readagain.PNG)
+![](readagain.PNG)
 
 `Our intern, Jeff`! So maybe there is a user called jeff on the system. Trying to access `/home/jeff/flag.txt` revealed the flag!
 
-![flag](C:\Users\ADMIN\Desktop\WRITEUPs\flag.png)
+![](flag.png)
 
 
 
@@ -261,7 +278,7 @@ And here where the description is being a key to solve the challenge. Let's read
 
 ## Description
 
-![babybof1_pt2](C:\Users\ADMIN\Desktop\WRITEUPs\babybof1_pt2.PNG)
+![](babybof1_pt2.PNG)
 
 ## Overview
 
@@ -269,7 +286,7 @@ Starting with the dynamic analysis as usual by running the given binary and inte
 
 Let's first get some info about the binary using the file command.
 
-![filecommand](C:\Users\ADMIN\Desktop\WRITEUPs\filecommand.PNG)
+![](filecommand.PNG)
 
 A 64-bit executable, dynamically linked and not stripped.
 
@@ -289,11 +306,11 @@ Stripped means that the binary is not having debugging symbols which makes it ha
 
 Now let's run the binary
 
-![one_interac](C:\Users\ADMIN\Desktop\WRITEUPs\one_interac.PNG)
+![](one_interac.PNG)
 
 Not really that much, it just asks for a name, takes the input and then exits. From the challenge name, it should be a buffer overflow. So let's confirm it by entering so many characters overflowing the return instruction pointer and causing a segmentation fault.
 
-![segfault](C:\Users\ADMIN\Desktop\WRITEUPs\segfault.PNG)
+![](segfault.PNG)
 
 Okay so we are dealing with a stack based overflow here. Let's get to the static analysis part now by opening the binary in disassembler and taking a look at the source code and the functions it's calling + the defined functions there.
 
@@ -301,7 +318,7 @@ Okay so we are dealing with a stack based overflow here. Let's get to the static
 void main(void)
 
 {
-  char local_108 [256];
+  char local_108 [];
   
   puts("Welcome to the cybercastors Babybof");
   printf("Say your name: ");
@@ -342,7 +359,7 @@ PIE or position independent executable is used making the addresses of the funct
 
 relro is a reference to relocation read only which a protection used to make some sections of the binary read only.
 
-A partial relro means that we still have write permission on the GOT (the global offset table is a table that contains offsets to addresses of external functions to execute [Example: printf/gets/puts] after being fetched with the PLT [Procedure linkage table is used to either tell the linker to loop up an address of a function if it isn't in the GOT otherwise it will just fetch the address from the GOT and jump to right code]).
+A partial relro means that we still have write permission on the GOT (the global offset table is a table that contains offsets to addresses of external functions to execute []).
 
 Also the partial relro is a way to tell the compiler to make the GOT before the BSS section so that even if an overflow of a global variable it wouldn't overwrite the entries in the GOT section.
 
@@ -362,7 +379,7 @@ Okay, we wouldn't put our shellcode on the stack and then jump to it because ASL
 
 So what I'm going to do here is placing my shellcode on a section that is not affected by the ASLR. For example the BSS or the DATA section. And in order to do that I'm going to use some gadgets (basically a return oriented programming attack). Before even going to decide if you are going to place you shellcode on the a section, you need to know whether it's writable or not. My favorite technique is to use ghidra in order to do that. You can do that by going on the menu to `Windows --> Memory Map`.
 
-![rw_data_bss](C:\Users\ADMIN\Desktop\WRITEUPs\rw_data_bss.PNG)
+![](rw_data_bss.PNG)
 
 ### Breakpoint
 
@@ -372,11 +389,11 @@ Rop is a reference to return oriented programming, which is an attack usually us
 
 Let's start by determining how many bytes should we overwrite in order to reach the return instruction pointer and get control of the execution flow. A technique i like to do that is to use a patter of non repeatable characters throw them into the program with gdb causing a segmentation fault and printing the overwrited return instruction pointer. I first generate the patter with the function cyclic() from the pwntools library and the cyclic_find() function to get the offset. Since our buffer is 256 bytes so we can generate a pattern with 300 bytes long.
 
-![cylic_300](C:\Users\ADMIN\Desktop\WRITEUPs\cylic_300.PNG)
+![](cylic_300.PNG)
 
 passing that to the program with gdb
 
-![enter_gdb](C:\Users\ADMIN\Desktop\WRITEUPs\enter_gdb.PNG)
+![](enter_gdb.PNG)
 
 ### Breakpoint
 
@@ -386,29 +403,29 @@ but hey I think that's faster.
 
 ### Continue
 
-Hitting enter, since we are exploiting a 64-bit program overflowing the program entering this huge buffer will not overwride the return instruction pointer directly because the rip (register pointing to the instruction pointer in 64-bit [it's eip on 32-bit executables]) needs to be loaded with a canonical address otherwise it wouldn't be overwritten. In 32-bit it's not the case, since the value of the return instruction pointer will just be popped (pop is a mnemonic in assembly that will load the value pointed to by the stack pointer into the first operand you gave [an operand is just like an argument in normal programming but in assembly it's called an operand]) from the stack directly. 
+Hitting enter, since we are exploiting a 64-bit program overflowing the program entering this huge buffer will not overwride the return instruction pointer directly because the rip (register pointing to the instruction pointer in 64-bit []) from the stack directly. 
 
-![themfnon](C:\Users\ADMIN\Desktop\WRITEUPs\themfnon.PNG)
+![](themfnon.PNG)
 
-And since I'm using a gdb plugin this will make thing more clear and help us in our trip of exploiting. So in that case of the 64-bit executable, we will take a look at the value of the rbp (register pointing to the base pointer, when starting to execute a function it's value is set to the stack pointer [which is a register called esp in 32-bit and rsp in 64-bit always pointing to the top of our stack] and it's used to access local parameters and variables based on an offset) since we have overwritten it and it's just placed before the return instruction pointer in order to overwrite the return instruction pointer with the correct address. We can print the value of the rbp on gdb by entering `p $rbp, print $rbp` or by showing all the registers information using the command `i r, info reg, info registers` what ever you like :joy:.
+And since I'm using a gdb plugin this will make thing more clear and help us in our trip of exploiting. So in that case of the 64-bit executable, we will take a look at the value of the rbp (register pointing to the base pointer, when starting to execute a function it's value is set to the stack pointer [] and it's used to access local parameters and variables based on an offset) since we have overwritten it and it's just placed before the return instruction pointer in order to overwrite the return instruction pointer with the correct address. We can print the value of the rbp on gdb by entering `p $rbp, print $rbp` or by showing all the registers information using the command `i r, info reg, info registers` what ever you like :joy:.
 
-![rbp_value](C:\Users\ADMIN\Desktop\WRITEUPs\rbp_value.PNG)
+![](rbp_value.PNG)
 
 then we need to search for this value in our patter using the cyclic_find() function, and since this function will perform the search based on the first 4 bytes so we will pass to it the first 4 bytes of the base pointer (0x63616170) then add 4 to it in order to get the right offset.
 
-![theoffset](C:\Users\ADMIN\Desktop\WRITEUPs\theoffset.PNG)
+![](theoffset.PNG)
 
 so our offset is 264 we can confirm that by entering 'A' 264 times and then overwrite the return instruction pointer with some 'B'. That will be our payload:
 
-![firstpayload](C:\Users\ADMIN\Desktop\WRITEUPs\firstpayload.PNG)
+![](firstpayload.PNG)
 
 Entering in gdb will overwrite the return instruction pointer making it point to `0x0000424242424242`
 
-![rbpfirstoverwrite](C:\Users\ADMIN\Desktop\WRITEUPs\rbpfirstoverwrite.PNG)
+![](rbpfirstoverwrite.PNG)
 
 Good we got the math right. Now let's start by constructing our ropchain. For this purpose I used the famous tool ROPgadget to search for the gadgets. 
 
-![ropgadgetcommand](C:\Users\ADMIN\Desktop\WRITEUPs\ropgadgetcommand.PNG)
+![](ropgadgetcommand.PNG)
 
 I redirected the output to a file because it might have a lot of gadgets and this will take time to get them so I don't want to run the program everytime and wait for output.
 
@@ -435,7 +452,7 @@ Our ropchain will be:
 
 Knowing that we need to find a gadget that will pop rdi and return. So let's grep for one.
 
-![pop_rdi](C:\Users\ADMIN\Desktop\WRITEUPs\pop_rdi.PNG)
+![](pop_rdi.PNG)
 
 okay so our gadget is located at `0x00000000004007f3`. This gadget will:
 
@@ -472,11 +489,11 @@ so I told the pwntools that I'm going to play with a 64-bit executable compiled 
 
 I then set up some variables with the addresses of our gadget, the gets@plt address and the data section address. You can find the gets@plt function by disassembly the main function with gdb, running the command `disas main`.
 
-![gets_plt](C:\Users\ADMIN\Desktop\WRITEUPs\gets_plt.PNG)
+![](gets_plt.PNG)
 
 and you can get the address of the data section by running `info files` with gdb or with your favorite disassembler.
 
-![sections](C:\Users\ADMIN\Desktop\WRITEUPs\sections.PNG)
+![](sections.PNG)
 
 You can get the size of the section by subtracting the first address from the second. For example for the data section it's `0x0000000000601068 - 0x0000000000601068 = 16` also the disassemblers out there like ghidra would show it to you. You might that 16 bytes of space is not enough especially when we are writing 64-bit shellcode but it's not problem here because the data and bss sections are below each other and so our buffer will overflow to the bss section making the full shellcode together. the p64() function is a way used to convert from an integer little/big endian because that's how it will be correctly placed in memory and that the program will understand it. It's basically packing the integers. Good so let's start with making our shellcode. 
 
@@ -528,6 +545,6 @@ r.close()
 
 Let's walkthrough the exploit one more time. So first we place 264 'A' so we reach the return instruction pointer, we overwrite the return instruction pointer with the address pointing to the instruction `pop rdi; ret`, we place the address of data in the rdi register because it's the register to hold the first argument to call the function (in this case calling the function gets with it). then remember the `ret` that will do a `pop rip` we are placing into it the address of the data section again because we have our shellcode there and we want to start executing it. finally when it will run the gets will wait for our input so we enter our shellcode followed by the string "/bin/sh" followed by a null byte as I explained above. After testing the exploit locally, let's test that remotely and get the flag.
 
-![will_call_cops](C:\Users\ADMIN\Desktop\WRITEUPs\will_call_cops.PNG)
+![](will_call_cops.PNG)
 
 And yeah that's all about it. If you have any questions don't be shy to ask.
