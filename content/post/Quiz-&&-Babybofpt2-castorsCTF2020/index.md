@@ -1,5 +1,5 @@
 ---
-title: SignStealingSoftware-P2 UMDCTF2020
+title: Quiz-&&-Babybofpt2-castorsCTF2020
 date: 2020-06-01T17:54:37+01:00
 lastmod: 2020-06-01T17:54:37+01:00
 math: false
