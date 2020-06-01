@@ -245,8 +245,10 @@ Contents: HOSTNAME=a67d58c9b465HOME=/rootPATH=/go/bin:/usr/local/go/bin:/usr/loc
 
 and the important thing here is the PWD environment variable which is basically the current working directory. In this case it's `/quiz`. We also see that the home directory is `/root`. Knowing that I tried to include some files that I might have the flag. And in order to access files from the same directory I used netcat to pass the `.` (which means current directory), because all of the three names where required if you don't pass any of them you will get a `404 not found status code back` and because if you pass that with the browser or with the curl command they will remove it and that's the same case with the `..`, Knowing that I constructed the HTTP request with just two headers (because no need to include more headers here) which are the `Host`and the `Connection` header. The `Host` is used to indicate the host that we are trying to make the connection to, the `Connection` is used to indicate whether the connection should stay or should close after the transaction completes, so if we say `Connection: close` means that the connection will close after the transaction and `Connection: keep-alive` means that the connection will stay open after the transaction. Okay so let's start start by constructing the request.
 
+![](etc_passwd.png)
+
 ```
-![](etc_passwd.png)GET /test/quiz/./flag.txt HTTP/1.1
+GET /test/quiz/./flag.txt HTTP/1.1
 Host: web1.cybercastors.com:14436
 Connection: close
 ```
