@@ -66,7 +66,7 @@ I took the number $pp=587934254364063975369377416367$.
 
 Next, I factored $pp-1$ by [factordb](http://factordb.com/index.php?query=587934254364063975369377416366) again.
 
-$$ pp = 2 * 19 * 157 * 98547478103262483300264401 $$
+$$ pp - 1 = 2 * 19 * 157 * 98547478103262483300264401 $$
 
 Since the subgroup whose order is $157$ may be promising, take $t=2\*19\*98547478103262483300264401$.
 
