@@ -1,9 +1,7 @@
 ---
 title: Carthagods 3KCTF2020
-date: 2020-07-27T17:54:37+01:00
-lastmod: 2020-07-27T17:54:37+01:00
-math: false
-diagram: true
+date: 2020-07-27
+lastmod: 2020-07-27
 authors:
   - t0m7r00z
 tags:
