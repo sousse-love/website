@@ -13,7 +13,7 @@ superuser: true
 bio:
 
 interests:
-- pwn
+- pwn,reversing,crypto
 
 # Social/Academic Networking
 # For available icons, see: https://sourcethemes.com/academic/docs/page-builder/#icons
@@ -22,13 +22,13 @@ interests:
 social:
 - icon: twitter
   icon_pack: fab
-  link: 
+  link: https://twitter.com/@harsh_khuha
 - icon: github
   icon_pack: fab
-  link: 
+  link: https://github.com/hkraw
 - icon: internet-explorer
   icon_pack: fab
-  link: 
+  link: https://blog.harshkhuha.in/
 
 # Link to a PDF of your resume/CV from the About widget.
 # To enable, copy your resume/CV to `static/files/cv.pdf` and uncomment the lines below.
@@ -44,5 +44,4 @@ email: ""
 user_groups:
 -
 ---
-
-Write something about you here
+I am into binary exploitation and reverse engineering. And i would like to expand my skills into cryptography.
