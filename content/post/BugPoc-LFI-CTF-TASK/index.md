@@ -1,7 +1,7 @@
 ---
 title: BugPoc LFI CTF TASK
-date: 2020-10-06T16:55:28+05:30
-lastmod: 2020-10-06T16:55:28+05:30
+date: 2020-10-06
+lastmod: 2020-10-06
 authors:
   - t0m7r00z
 tags:
